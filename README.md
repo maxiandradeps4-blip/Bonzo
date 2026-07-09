@@ -1,10 +1,7 @@
-# bonzo v2 limpio
+# bonzo v2 mobile autofit
 
-cambios:
-- elimina verso gigante 400%
-- elimina cursiva
-- ibm plex sans weight 300
-- mantiene sonido grave/medio
-- reverb +50%
-- mantiene interlineado responsivo
-- mantiene palabra separada con intervalos 4,6,2,3,5
+- IBM Plex Sans 300
+- en móvil, cada verso reduce su tamaño automáticamente para no cortarse horizontalmente
+- mínimo móvil aproximado: 9.5px
+- si aun así no cabe, permite salto de línea con interlineado mínimo 1
+- mantiene sonido con +50% reverb
