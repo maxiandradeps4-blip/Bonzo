@@ -1,267 +1,196 @@
-const CONFIG = {
-  maxVersosVisibles: 6,
-  duracionDesaparecerMs: 3200,
-
-  // separación de palabra
-  intervalosPalabra: [4, 6, 2, 3, 5],
-  posicionesPalabra: [3, 6, 21],
-  espaciosMin: 7,
-  espaciosMax: 12,
-
-  // cada 15 versos, el siguiente aparece gigante/cursiva
-  intervaloGigante: 15,
-
-  // interlineado
-  lineHeightsDesktop: [0.25, 1.25, 2.25, 4.25, 7.25],
-  lineHeightsMobile: [1.0, 1.25, 2.25, 4.25, 7.25],
-
-  // notas graves + medios ocasionales
-  notas: [110.0, 130.8, 164.8, 185.0, 440.0, 523.25],
-
-  // sonido
-  volumen: 0.375,
-  dry: 0.18,
-  wet: 1.2, // +50% reverb respecto de 0.8
-  duracionTono: 0.7,
-  duracionReverb: 6.8,
-  decaimientoReverb: 2.4
+const CONFIG={
+  maxVersosVisibles:6,
+  duracionDesaparecerMs:3200,
+  intervalosPalabra:[4,6,2,3,5],
+  posicionesPalabra:[3,6,21],
+  espaciosMin:7,
+  espaciosMax:12,
+  lineHeightsDesktop:[0.25,1.25,2.25,4.25,7.25],
+  lineHeightsMobile:[1.0,1.25,2.25,4.25,7.25],
+  notas:[110.0,130.8,164.8,185.0,440.0,523.25],
+  volumen:0.375,
+  dry:0.18,
+  wet:1.2,
+  duracionTono:0.7,
+  duracionReverb:6.8,
+  decaimientoReverb:2.4
 };
 
-let versos = [];
-let versosMezclados = [];
-let indiceActual = 0;
-let versosVisibles = 0;
-let bloqueado = false;
-
-let indiceIntervalo = 0;
-let restanteParaAnimar = CONFIG.intervalosPalabra[indiceIntervalo];
-let contadorGlobal = 0;
-
-let audioCtx = null;
-let reverbBuffer = null;
-
-const poema = document.getElementById("poema");
+let versos=[];
+let versosMezclados=[];
+let indiceActual=0;
+let versosVisibles=0;
+let bloqueado=false;
+let indiceIntervalo=0;
+let restanteParaAnimar=CONFIG.intervalosPalabra[indiceIntervalo];
+let contadorGlobal=0;
+let audioCtx=null;
+let reverbBuffer=null;
+const poema=document.getElementById("poema");
 
 iniciar();
 
-async function iniciar() {
-  try {
-    const respuesta = await fetch("versos.json");
-    versos = await respuesta.json();
-  } catch (error) {
-    versos = [
+async function iniciar(){
+  try{
+    const respuesta=await fetch("versos.json");
+    versos=await respuesta.json();
+  }catch(error){
+    versos=[
       "conquistar territorios de luz con los dedos",
       "el paisaje se quema como se quema un libro viejo",
       "nadie lee fuego mientras todo se está quemando"
     ];
   }
-
-  versosMezclados = mezclar([...versos]);
+  versosMezclados=mezclar([...versos]);
   mostrarPrimerVerso();
-
-  document.body.addEventListener("click", agregarVerso);
-  document.body.addEventListener("touchstart", agregarVerso, { passive: true });
+  document.body.addEventListener("click",agregarVerso);
+  document.body.addEventListener("touchstart",agregarVerso,{passive:true});
 }
 
-function mezclar(lista) {
-  for (let i = lista.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [lista[i], lista[j]] = [lista[j], lista[i]];
+function mezclar(lista){
+  for(let i=lista.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [lista[i],lista[j]]=[lista[j],lista[i]];
   }
   return lista;
 }
 
-function mostrarPrimerVerso() {
-  const verso = versosMezclados[0];
-
-  indiceActual = 1;
-  versosVisibles = 1;
-  contadorGlobal = 1;
-
-  const debeSeparar = contarIntervalo();
-  const esGigante = esVersoGigante(contadorGlobal);
-
-  poema.appendChild(crearVerso(verso, debeSeparar, esGigante));
+function mostrarPrimerVerso(){
+  const verso=versosMezclados[0];
+  indiceActual=1;
+  versosVisibles=1;
+  contadorGlobal=1;
+  const debeSeparar=contarIntervalo();
+  poema.appendChild(crearVerso(verso,debeSeparar));
 }
 
-function agregarVerso() {
+function agregarVerso(){
   iniciarAudio();
-
-  if (bloqueado) return;
-  if (indiceActual >= versosMezclados.length) return;
-
-  if (versosVisibles >= CONFIG.maxVersosVisibles) {
+  if(bloqueado)return;
+  if(indiceActual>=versosMezclados.length)return;
+  if(versosVisibles>=CONFIG.maxVersosVisibles){
     cambiarBloque();
     return;
   }
-
-  const verso = versosMezclados[indiceActual];
-
+  const verso=versosMezclados[indiceActual];
   indiceActual++;
   versosVisibles++;
   contadorGlobal++;
-
-  const debeSeparar = contarIntervalo();
-  const esGigante = esVersoGigante(contadorGlobal);
-
-  poema.appendChild(crearVerso(verso, debeSeparar, esGigante));
+  const debeSeparar=contarIntervalo();
+  poema.appendChild(crearVerso(verso,debeSeparar));
   reproducirSonido();
 }
 
-function cambiarBloque() {
-  bloqueado = true;
+function cambiarBloque(){
+  bloqueado=true;
   poema.classList.add("desaparece");
-
-  const verso = versosMezclados[indiceActual];
+  const verso=versosMezclados[indiceActual];
   indiceActual++;
-
-  setTimeout(() => {
-    poema.innerHTML = "";
+  setTimeout(()=>{
+    poema.innerHTML="";
     poema.classList.remove("desaparece");
-
-    versosVisibles = 1;
+    versosVisibles=1;
     contadorGlobal++;
-
-    const debeSeparar = contarIntervalo();
-    const esGigante = esVersoGigante(contadorGlobal);
-
-    poema.appendChild(crearVerso(verso, debeSeparar, esGigante));
+    const debeSeparar=contarIntervalo();
+    poema.appendChild(crearVerso(verso,debeSeparar));
     reproducirSonido();
-
-    bloqueado = false;
-  }, CONFIG.duracionDesaparecerMs);
+    bloqueado=false;
+  },CONFIG.duracionDesaparecerMs);
 }
 
-function esVersoGigante(numeroVerso) {
-  return numeroVerso > 1 && numeroVerso % CONFIG.intervaloGigante === 0;
-}
-
-function contarIntervalo() {
+function contarIntervalo(){
   restanteParaAnimar--;
-
-  if (restanteParaAnimar === 0) {
+  if(restanteParaAnimar===0){
     siguienteIntervalo();
     return true;
   }
-
   return false;
 }
 
-function siguienteIntervalo() {
-  indiceIntervalo = (indiceIntervalo + 1) % CONFIG.intervalosPalabra.length;
-  restanteParaAnimar = CONFIG.intervalosPalabra[indiceIntervalo];
+function siguienteIntervalo(){
+  indiceIntervalo=(indiceIntervalo+1)%CONFIG.intervalosPalabra.length;
+  restanteParaAnimar=CONFIG.intervalosPalabra[indiceIntervalo];
 }
 
-function crearVerso(texto, debeSeparar, esGigante) {
-  const div = document.createElement("div");
-  div.className = "verso";
-
-  if (esGigante) {
-    div.classList.add("verso-gigante");
+function crearVerso(texto,debeSeparar){
+  const div=document.createElement("div");
+  div.className="verso";
+  const lineHeights=window.innerWidth<=768?CONFIG.lineHeightsMobile:CONFIG.lineHeightsDesktop;
+  div.style.lineHeight=elegir(lineHeights);
+  if(debeSeparar){
+    div.innerHTML=separarPalabra(texto);
+  }else{
+    div.textContent=texto;
   }
-
-  const lineHeights = window.innerWidth <= 768
-    ? CONFIG.lineHeightsMobile
-    : CONFIG.lineHeightsDesktop;
-
-  div.style.lineHeight = elegir(lineHeights);
-
-  if (debeSeparar) {
-    div.innerHTML = separarPalabra(texto);
-  } else {
-    div.textContent = texto;
-  }
-
   return div;
 }
 
-function separarPalabra(texto) {
-  const palabras = texto.split(" ");
-  const posibles = CONFIG.posicionesPalabra
-    .map(posicion => posicion - 1)
-    .filter(indice => indice < palabras.length);
-
-  if (posibles.length === 0) return texto;
-
-  const indiceEspecial = elegir(posibles);
-  const cantidadEspacios = numeroAleatorio(CONFIG.espaciosMin, CONFIG.espaciosMax);
-  const espacios = "&nbsp;".repeat(cantidadEspacios);
-
-  return palabras.map((palabra, indice) => {
-    if (indice === indiceEspecial) {
+function separarPalabra(texto){
+  const palabras=texto.split(" ");
+  const posibles=CONFIG.posicionesPalabra.map(pos=>pos-1).filter(indice=>indice<palabras.length);
+  if(posibles.length===0)return texto;
+  const indiceEspecial=elegir(posibles);
+  const cantidadEspacios=numeroAleatorio(CONFIG.espaciosMin,CONFIG.espaciosMax);
+  const espacios="&nbsp;".repeat(cantidadEspacios);
+  return palabras.map((palabra,indice)=>{
+    if(indice===indiceEspecial){
       return `${espacios}<span class="palabra-separada">${palabra}</span>`;
     }
     return palabra;
   }).join(" ");
 }
 
-function elegir(lista) {
-  return lista[Math.floor(Math.random() * lista.length)];
-}
+function elegir(lista){return lista[Math.floor(Math.random()*lista.length)]}
+function numeroAleatorio(min,max){return Math.floor(Math.random()*(max-min+1))+min}
 
-function numeroAleatorio(min, max) {
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-}
-
-/* sonido generativo */
-function iniciarAudio() {
-  if (!audioCtx) {
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    reverbBuffer = crearReverb(audioCtx, CONFIG.duracionReverb, CONFIG.decaimientoReverb);
+function iniciarAudio(){
+  if(!audioCtx){
+    audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+    reverbBuffer=crearReverb(audioCtx,CONFIG.duracionReverb,CONFIG.decaimientoReverb);
   }
-
-  if (audioCtx.state === "suspended") {
-    audioCtx.resume();
-  }
+  if(audioCtx.state==="suspended")audioCtx.resume();
 }
 
-function reproducirSonido() {
-  if (!audioCtx) return;
+function reproducirSonido(){
+  if(!audioCtx)return;
+  const freq=elegir(CONFIG.notas);
+  const osc=audioCtx.createOscillator();
+  const master=audioCtx.createGain();
+  const dry=audioCtx.createGain();
+  const wet=audioCtx.createGain();
+  const convolver=audioCtx.createConvolver();
 
-  const freq = elegir(CONFIG.notas);
+  convolver.buffer=reverbBuffer;
+  osc.type="sine";
+  osc.frequency.setValueAtTime(freq,audioCtx.currentTime);
 
-  const osc = audioCtx.createOscillator();
-  const master = audioCtx.createGain();
-  const dry = audioCtx.createGain();
-  const wet = audioCtx.createGain();
-  const convolver = audioCtx.createConvolver();
+  master.gain.setValueAtTime(0.0,audioCtx.currentTime);
+  master.gain.linearRampToValueAtTime(CONFIG.volumen,audioCtx.currentTime+0.05);
+  master.gain.linearRampToValueAtTime(0.0,audioCtx.currentTime+CONFIG.duracionTono);
 
-  convolver.buffer = reverbBuffer;
-
-  osc.type = "sine";
-  osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-
-  master.gain.setValueAtTime(0.0, audioCtx.currentTime);
-  master.gain.linearRampToValueAtTime(CONFIG.volumen, audioCtx.currentTime + 0.05);
-  master.gain.linearRampToValueAtTime(0.0, audioCtx.currentTime + CONFIG.duracionTono);
-
-  dry.gain.value = CONFIG.dry;
-  wet.gain.value = CONFIG.wet;
+  dry.gain.value=CONFIG.dry;
+  wet.gain.value=CONFIG.wet;
 
   osc.connect(master);
-
   master.connect(dry);
   dry.connect(audioCtx.destination);
-
   master.connect(convolver);
   convolver.connect(wet);
   wet.connect(audioCtx.destination);
 
   osc.start(audioCtx.currentTime);
-  osc.stop(audioCtx.currentTime + CONFIG.duracionTono);
+  osc.stop(audioCtx.currentTime+CONFIG.duracionTono);
 }
 
-function crearReverb(ctx, duracion = 4, decaimiento = 2) {
-  const tasa = ctx.sampleRate;
-  const largo = tasa * duracion;
-  const impulse = ctx.createBuffer(2, largo, tasa);
-
-  for (let canal = 0; canal < 2; canal++) {
-    const datos = impulse.getChannelData(canal);
-    for (let i = 0; i < largo; i++) {
-      datos[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / largo, decaimiento);
+function crearReverb(ctx,duracion=4,decaimiento=2){
+  const tasa=ctx.sampleRate;
+  const largo=tasa*duracion;
+  const impulse=ctx.createBuffer(2,largo,tasa);
+  for(let canal=0;canal<2;canal++){
+    const datos=impulse.getChannelData(canal);
+    for(let i=0;i<largo;i++){
+      datos[i]=(Math.random()*2-1)*Math.pow(1-i/largo,decaimiento);
     }
   }
-
   return impulse;
 }
