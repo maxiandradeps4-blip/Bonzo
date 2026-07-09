@@ -1,1 +1,109 @@
-body{background:#000;color:#fff}
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --fondo: #000;
+  --texto: #f3f3f3;
+  --ancho: 700px;
+  --duracion-aparece: 1.6s;
+  --duracion-desaparece: 3.2s;
+}
+
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--fondo);
+  color: var(--texto);
+  font-family: "IBM Plex Sans", sans-serif;
+  font-weight: 100;
+  font-size: 15px;
+  letter-spacing: 0.01em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+#obra {
+  min-height: 100svh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#poema {
+  width: min(70vw, var(--ancho));
+  text-align: left;
+  white-space: pre-line;
+}
+
+.verso {
+  margin: 0;
+  opacity: 0;
+  animation: aparece var(--duracion-aparece) ease forwards;
+}
+
+.verso-gigante {
+  font-size: 400%;
+  font-style: italic;
+  line-height: 1.05 !important;
+}
+
+.desaparece {
+  animation: desaparece var(--duracion-desaparece) ease forwards;
+}
+
+.palabra-separada {
+  display: inline-block;
+  animation: separar 0.7s ease-out;
+}
+
+@keyframes aparece {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes desaparece {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+@keyframes separar {
+  0% {
+    transform: translateX(0);
+    opacity: 0.65;
+  }
+  45% {
+    transform: translateX(5px);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    font-size: 13px;
+  }
+
+  #poema {
+    width: 90vw;
+    max-width: 90vw;
+  }
+}
