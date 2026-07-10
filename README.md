@@ -1,7 +1,9 @@
-# bonzo v2 mobile autofit
+# bonzo horizontal
 
-- IBM Plex Sans 300
-- en móvil, cada verso reduce su tamaño automáticamente para no cortarse horizontalmente
-- mínimo móvil aproximado: 9.5px
-- si aun así no cabe, permite salto de línea con interlineado mínimo 1
-- mantiene sonido con +50% reverb
+- en teléfono vertical muestra “gira el teléfono →”
+- en horizontal aparece la obra
+- ibm plex sans 300
+- máximo 6 versos visibles
+- tipografía móvil con autoajuste
+- interlineado mínimo 1 en móvil
+- sonido generativo grave/medio con reverb
