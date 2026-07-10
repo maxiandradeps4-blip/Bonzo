@@ -1,7 +1,3 @@
-# bonzo vertical con sangría
+# bonzo vertical — audio WAV móvil
 
-- orientación vertical en móvil
-- tipografía fija en 13 px
-- los versos largos continúan en la línea siguiente
-- las líneas siguientes tienen sangría de 25%
-- mantiene sonido generativo y reverb
+Usa cuatro archivos WAV locales con reverb incorporada. Mantén la carpeta sonidos al subir a GitHub.
