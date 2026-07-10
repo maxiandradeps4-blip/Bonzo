@@ -1,17 +1,96 @@
 *{box-sizing:border-box}
-:root{--fondo:#000;--texto:#f3f3f3;--duracion-aparece:1.6s;--duracion-desaparece:3.2s}
+:root{
+  --fondo:#000;
+  --texto:#f3f3f3;
+  --duracion-aparece:1.6s;
+  --duracion-desaparece:3.2s;
+}
 html,body{width:100%;height:100%;margin:0}
-body{background:var(--fondo);color:var(--texto);font-family:"IBM Plex Sans",sans-serif;font-weight:300;font-size:15px;letter-spacing:.01em;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;text-rendering:optimizeLegibility;overflow:hidden;cursor:pointer}
-#obra{width:100%;min-height:100svh;display:flex;align-items:center;justify-content:center;opacity:1;transition:opacity 1.2s ease}
-#poema{width:min(76vw,900px);text-align:left;white-space:pre-line}
-.verso{margin:0;opacity:0;animation:aparece var(--duracion-aparece) ease forwards}
+body{
+  background:var(--fondo);
+  color:var(--texto);
+  font-family:"IBM Plex Sans",sans-serif;
+  font-weight:300;
+  font-size:15px;
+  letter-spacing:.01em;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  text-rendering:optimizeLegibility;
+  overflow:hidden;
+  cursor:pointer;
+  touch-action:manipulation;
+}
+#obra{
+  width:100%;
+  min-height:100svh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  opacity:1;
+  transition:opacity 1.2s ease;
+}
+#poema{
+  width:min(76vw,900px);
+  text-align:left;
+  white-space:pre-line;
+}
+.verso{
+  margin:0;
+  opacity:0;
+  animation:aparece var(--duracion-aparece) ease forwards;
+}
 .desaparece{animation:desaparece var(--duracion-desaparece) ease forwards}
-.palabra-separada{display:inline-block;animation:separar .7s ease-out}
-#girar{display:none;position:fixed;inset:0;z-index:10;align-items:center;justify-content:center;gap:.75rem;background:#000;color:#f3f3f3;font-size:13px;letter-spacing:.02em;opacity:1;transition:opacity 1s ease}
-#girar .flecha{display:inline-block;animation:flecha 1.8s ease-in-out infinite}
-@keyframes aparece{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-@keyframes desaparece{from{opacity:1}to{opacity:0}}
-@keyframes separar{0%{transform:translateX(0);opacity:.65}45%{transform:translateX(5px);opacity:1}100%{transform:translateX(0);opacity:1}}
-@keyframes flecha{0%,100%{transform:translateX(0);opacity:.45}50%{transform:translateX(8px);opacity:1}}
-@media (max-width:768px) and (orientation:portrait){#girar{display:flex}#obra{opacity:0;pointer-events:none}}
-@media (max-width:768px) and (orientation:landscape){body{font-size:13px}#poema{width:88vw;max-width:88vw}.verso{overflow-wrap:normal;word-break:normal;hyphens:none}}
+.palabra-separada{
+  display:inline-block;
+  animation:separar .7s ease-out;
+}
+#girar{
+  display:none;
+  position:fixed;
+  inset:0;
+  z-index:10;
+  align-items:center;
+  justify-content:center;
+  gap:.75rem;
+  background:#000;
+  color:#f3f3f3;
+  font-size:13px;
+}
+#girar .flecha{
+  display:inline-block;
+  animation:flecha 1.8s ease-in-out infinite;
+}
+@keyframes aparece{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes desaparece{
+  from{opacity:1}
+  to{opacity:0}
+}
+@keyframes separar{
+  0%{transform:translateX(0);opacity:.65}
+  45%{transform:translateX(5px);opacity:1}
+  100%{transform:translateX(0);opacity:1}
+}
+@keyframes flecha{
+  0%,100%{transform:translateX(0);opacity:.45}
+  50%{transform:translateX(8px);opacity:1}
+}
+@media (max-width:768px) and (orientation:portrait){
+  #girar{display:flex}
+  #obra{opacity:0;pointer-events:none}
+}
+@media (max-width:768px) and (orientation:landscape){
+  body{font-size:13px}
+  #poema{
+    width:88vw;
+    max-width:88vw;
+  }
+  .verso{
+    font-size:13px !important;
+    overflow-wrap:normal;
+    word-break:normal;
+    hyphens:none;
+  }
+}

@@ -1,9 +1,7 @@
-# bonzo horizontal
+# bonzo horizontal — tipografía fija
 
-- en teléfono vertical muestra “gira el teléfono →”
-- en horizontal aparece la obra
-- ibm plex sans 300
-- máximo 6 versos visibles
-- tipografía móvil con autoajuste
-- interlineado mínimo 1 en móvil
-- sonido generativo grave/medio con reverb
+- en móvil horizontal la tipografía queda fija en 13 px
+- ya no cambia de tamaño según el largo del verso
+- el audio se activa con el primer toque en móvil
+- usa pointerdown para evitar problemas entre touch y click
+- mantiene sonido generativo y reverb
