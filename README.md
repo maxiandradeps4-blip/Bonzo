@@ -1,7 +1,7 @@
-# bonzo horizontal — tipografía fija
+# bonzo vertical con sangría
 
-- en móvil horizontal la tipografía queda fija en 13 px
-- ya no cambia de tamaño según el largo del verso
-- el audio se activa con el primer toque en móvil
-- usa pointerdown para evitar problemas entre touch y click
+- orientación vertical en móvil
+- tipografía fija en 13 px
+- los versos largos continúan en la línea siguiente
+- las líneas siguientes tienen sangría de 25%
 - mantiene sonido generativo y reverb
